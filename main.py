@@ -67,9 +67,17 @@ def msrktaskcomplete():
     if checuser(request_payload["name"]):
         return "No such User"
     else:
-        #task = request_payload["task"]
         if "task" in request_payload:
-            pass
+            task = request_payload["task"]
+            str = f"tasks.{task}"
+            myquery = {"name": request_payload["name"]}
+            newvalues = {"$set":
+                {
+                    str: True
+                }
+            }
+            collection.update_one(myquery, newvalues)
+            return f"{task}, status: Completed"
         else:
             return redirect(url_for('getTask'),code=307)
             
