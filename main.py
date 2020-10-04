@@ -1,10 +1,10 @@
 from flask import Flask
-from flask import request, jsonify
+from flask import request, redirect, url_for
 import pymongo
 from pymongo import MongoClient
 import json
-from bson import json_util
-from bson import ObjectId
+
+
 
 app = Flask(__name__)
 cluster = MongoClient("mongodb+srv://akash:akash@cluster0.zqitl.mongodb.net/<dbname>?retryWrites=true&w=majority")
@@ -61,13 +61,21 @@ def getTask():
 
         return json.dumps(val)
 
-"""@app.route("/markTaskComplete", methods=["POST"])
+@app.route("/markTaskComplete", methods=["POST"])
 def msrktaskcomplete():
     request_payload = request.get_json(force=True)
     if checuser(request_payload["name"]):
         return "No such User"
     else:
-"""
+        #task = request_payload["task"]
+        if "task" in request_payload:
+            pass
+        else:
+            return redirect(url_for('getTask'),code=307)
+            
+
+            
+
 
 
 
