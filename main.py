@@ -19,12 +19,6 @@ def checuser(name):
     else:
         return True
 
-class JSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, ObjectId):
-            return str(o)
-        return json.JSONEncoder.default(self, o)
-
 
 @app.route("/addUser", methods=["POST"])
 def adduser():
