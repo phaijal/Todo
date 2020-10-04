@@ -39,8 +39,10 @@ def addtask():
         myquery = {"name": request_payload["name"]}
         newvalues = {"$push":
                          {
-                             "tasks": request_payload["task"],
-                              "done": False
+                             "tasks": {
+                                        "task": request_payload["task"],
+                                        "done": False
+                             }
                          }
                      }
         collection.update_one(myquery, newvalues)
