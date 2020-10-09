@@ -3,23 +3,21 @@ from flask import request, redirect, url_for
 import pymongo
 from pymongo import MongoClient
 import json
-
-
+from bson import json_util
+from model import todo
 
 app = Flask(__name__)
-cluster = MongoClient("mongodb+srv://akash:akash@cluster0.zqitl.mongodb.net/<dbname>?retryWrites=true&w=majority")
 
-db = cluster["dbname"]
-collection = db["coll"]
-
-
+tod= todo.Todo()
+"""
 def checuser(name):
     if collection.find_one({"name": name}):
         return False
     else:
         return True
 
-
+"""
+"""
 @app.route("/addUser", methods=["POST"])
 def adduser():
     request_payload = request.get_json(force=True)
@@ -29,67 +27,47 @@ def adduser():
         return "added User"
     else:
         return "User exist"
-
-
+"""
 
 
 @app.route("/addTask", methods=["POST"])
 def addtask():
     request_payload = request.get_json(force=True)
-    if checuser(request_payload["name"]):
-        return "No such User"
-    else:
-        task=request_payload["task"]
-        str = f"tasks.{task}"
-        myquery = {"name": request_payload["name"]}
-        newvalues = {"$set":
-                         {
-                             str: False
-                         }
-                     }
-        collection.update_one(myquery, newvalues)
-        return "Added Task"
+
+    task = request_payload["task"]
+    """
+    #str = f"tasks.{task}"
+    #myquery = {"name": request_payload["name"]}
+    #newvalues = {"$set":
+     #                    {
+      #                       str: False
+       #                  }
+        #             }
+    #collection.update_one(myquery, newvalues)
+    """
+    return json.dumps(tod.add(task))
 
 
-@app.route("/getTask", methods=["POST"])
+@app.route("/getTask")
 def getTask():
-    request_payload = request.get_json(force=True)
-    if checuser(request_payload["name"]):
-        return "No such User"
-    else:
-        val = collection.find_one({"name": request_payload["name"]})["tasks"]
+    #request_payload = request.get_json(force=True)
+    #print(request_payload)
 
-        return json.dumps(val)
+    return json_util.dumps(tod.get())
+
 
 @app.route("/markTaskComplete", methods=["POST"])
-def msrktaskcomplete():
+def marktaskcomplete():
     request_payload = request.get_json(force=True)
-    if checuser(request_payload["name"]):
-        return "No such User"
+
+    if "task" in request_payload:
+        task = request_payload["task"]
+        #str = f"tasks.{task}"
+
+        return tod.markcomp(task)
     else:
-        if "task" in request_payload:
-            task = request_payload["task"]
-            str = f"tasks.{task}"
-            myquery = {"name": request_payload["name"]}
-            newvalues = {"$set":
-                {
-                    str: True
-                }
-            }
-            collection.update_one(myquery, newvalues)
-            return f"{task}, status: Completed"
-        else:
-            return redirect(url_for('getTask'),code=307)
+        return redirect(url_for('getTask'))
             
-
-            
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     app.run()
