@@ -33,7 +33,6 @@ def adduser():
 @app.route("/addTask", methods=["POST"])
 def addtask():
     request_payload = request.get_json(force=True)
-
     task = request_payload["task"]
     """
     #str = f"tasks.{task}"
