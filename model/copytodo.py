@@ -1,15 +1,46 @@
 from mongoengine import *
 
-connect('project1', host='mongodb+srv://akash:akash@cluster0.zqitl.mongodb.net/<dbname>?retryWrites=true&w=majority')
+connect(host='mongodb+srv://akash:akash@cluster0.zqitl.mongodb.net/dbname?retryWrites=true&w=majority')
 
 
-class Task(Document):
-    task = StringField(required=True)
-    done = BooleanField(default=False)
+class taskname(EmbeddedDocument):
+    task = StringField()
+    done = BooleanField()
+
+
+class Tasks(Document):
+    heading = StringField(required=True)
+    tasks = ListField(EmbeddedDocumentField(taskname))
+    t = StringField()
+
+
+
+
+
+def add_heading(heading):
+    Tasks(heading=heading).save()
+
+
+def add_task(heading, task):
+    task_name = taskname(task=task, done=False)
+    t = Tasks.objects.get(heading=heading)
+    t.tasks.append(task_name)
+    t.save()
+
+
+def mark_complete(heading, task):
+   # Task.objects(task=tas).update(done=True)
+    t = Tasks.objects.get(heading=heading)
+    for a in t.tasks:
+        if a.task == task:
+            a.done = True
+    t.save()
+"""
+
 
 
 def add_task(task):
-    Task(task=task, done=False).save()
+    Tasks(task=task, done=False).save()
 
 
 
@@ -27,7 +58,7 @@ def mark_complete(tas):
    # task[0].done= True
  #   task.done = True
    # Task.save(self)
-
+"""
 """
 
 

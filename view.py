@@ -8,6 +8,31 @@ app = Flask(__name__)
 c = contro.Controller()
 
 
+@app.route("/addHeading", methods=["POST"])
+def addHeading():
+    request_payload = request.get_json(force=True)
+    c.add_heading(request_payload)
+    ret_json = {
+        "msg": "Added Heading"
+    }
+    return json.dumps(ret_json)
+
+
+@app.route("/addTask", methods=["POST"])
+def addtask():
+    request_payload = request.get_json(force=True)
+    c.add_task(request_payload)
+    ret_json = {
+        "msg": "Added Task"
+    }
+    return json.dumps(ret_json)
+
+
+@app.route("/markTaskComplete", methods=["POST"])
+def marktaskcomplete():
+    request_payload = request.get_json(force=True)
+    return c.mark_taskcomplete(request_payload)
+"""
 @app.route("/addTask", methods=["POST"])
 def addtask():
     request_payload = request.get_json(force=True)
@@ -28,6 +53,6 @@ def marktaskcomplete():
     request_payload = request.get_json(force=True)
     return c.mark_taskcomplete(request_payload)
 
-
+"""
 if __name__ == "__main__":
     app.run()
