@@ -26,7 +26,6 @@ def getTask():
 @app.route("/markTaskComplete", methods=["POST"])
 def marktaskcomplete():
     request_payload = request.get_json(force=True)
-
     return c.mark_taskcomplete(request_payload)
 
 
