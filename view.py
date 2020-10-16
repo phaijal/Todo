@@ -18,34 +18,26 @@ def addHeading():
     return json.dumps(ret_json)
 
 
-@app.route("/addTask", methods=["POST"])
-def addtask():
-    request_payload = request.get_json(force=True)
-    c.add_task(request_payload)
-    ret_json = {
-        "msg": "Added Task"
-    }
-    return json.dumps(ret_json)
+@app.route("/getHeading")
+def getheading():
+    return c.get_heading()
 
 
-@app.route("/markTaskComplete", methods=["POST"])
-def marktaskcomplete():
-    request_payload = request.get_json(force=True)
-    return c.mark_taskcomplete(request_payload)
-"""
-@app.route("/addTask", methods=["POST"])
-def addtask():
-    request_payload = request.get_json(force=True)
-    c.add_task(request_payload)
-    ret_json = {
-        "msg": "Added Task"
-    }
-    return json.dumps(ret_json)
-
-
-@app.route("/getTask")
+@app.route("/getTask", methods=["POST"])
 def getTask():
-    return c.get_Task()
+    request_payload = request.get_json(force=True)
+    heading = request_payload["heading"]
+    return c.get_Task(heading)
+
+
+@app.route("/addTask", methods=["POST"])
+def addtask():
+    request_payload = request.get_json(force=True)
+    c.add_task(request_payload)
+    ret_json = {
+        "msg": "Added Task"
+    }
+    return json.dumps(ret_json)
 
 
 @app.route("/markTaskComplete", methods=["POST"])
@@ -53,6 +45,6 @@ def marktaskcomplete():
     request_payload = request.get_json(force=True)
     return c.mark_taskcomplete(request_payload)
 
-"""
+
 if __name__ == "__main__":
     app.run()
