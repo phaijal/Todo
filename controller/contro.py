@@ -48,8 +48,9 @@ class Controller:
                     if a.task == task:
                         a.done = True
                 copytodo.save_task_object(t)
+                m = task+", status: Completed"
                 ret_json = {
-                    "msg": f"{task}, status: Completed"
+                    "msg": m
                 }
                 return json.dumps(ret_json)
             else:
