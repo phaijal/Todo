@@ -23,7 +23,10 @@ def get_all_task_object():
 
 
 def get_task_object(heading):
-    return Tasks.objects.get(heading=heading)
+    if Tasks.objects(heading=heading).count():
+        return Tasks.objects.get(heading=heading)
+    else:
+        return 0
 
 
 def save_task_object(t):

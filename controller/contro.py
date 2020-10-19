@@ -17,8 +17,8 @@ class Controller:
         return json.dumps(ret)
 
 
-    def add_task(self, request_payload):
-        heading = request_payload["heading"]
+    def add_task(self,heading, request_payload):
+        #heading = request_payload["heading"]
         task = request_payload["task"]
         #copytodo.add_task(heading, task)
         task_name = copytodo.taskname(task=task, done=False)
@@ -29,21 +29,27 @@ class Controller:
 
     def get_Task(self, heading):
         t = copytodo.get_task_object(heading)
-        tasks = list(t.tasks)
-        print(tasks)
-        ret = []
-        for a in tasks:
-            ret.append(a.task)
+        if t == 0:
+            ret = "No Heading"
+        else:
+            tasks = list(t.tasks)
+            #print(tasks)
+            ret = []
+            for a in tasks:
+                ret.append(a.task)
         return json.dumps(ret)
 
 
-    def mark_taskcomplete(self, request_payload):
-        if "heading" in request_payload:
-            if "task" in request_payload :
-                heading = request_payload["heading"]
-                task = request_payload["task"]
-              #  copytodo.mark_complete(heading, task)
-                t = copytodo.get_task_object(heading)
+    def mark_taskcomplete(self,heading, request_payload):
+
+        if "task" in request_payload :
+            #heading = request_payload["heading"]
+            task = request_payload["task"]
+          #  copytodo.mark_complete(heading, task)
+            t = copytodo.get_task_object(heading)
+            if t == 0:
+                ret = "No Heading"
+            else:
                 for a in t.tasks:
                     if a.task == task:
                         a.done = True
@@ -53,13 +59,9 @@ class Controller:
                     "msg": m
                 }
                 return json.dumps(ret_json)
-            else:
-                ret_json = {
-                    "msg": "no task specified"
-                }
-                return json.dumps(ret_json)
         else:
             ret_json = {
-                "msg": "no heading specified"
+                "msg": "no task specified"
             }
             return json.dumps(ret_json)
+
