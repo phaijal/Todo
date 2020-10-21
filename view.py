@@ -24,8 +24,6 @@ def getheading():
 
 @app.route("/Task/<heading>", methods=["GET"])
 def getTask(heading):
-    #request_payload = request.get_json(force=True)
-    #heading = request_payload["heading"]
     return json.dumps(list(c.get_Task(heading,jwt.decode(request.headers['Authorization'], key, algorithms='HS256'))))
 
 
@@ -53,13 +51,11 @@ from flask_restful import Resource, Api , reqparse
 
 from login.front import *
 from login.controller import *
-#app = Flask(__name__)
+
 key = 'secret'
 
 api= Api(app)
 
-# if password has special characters we need to encode them
-#connect(host ="mongodb+srv://akash:akash@cluster0.zqitl.mongodb.net/dbname?retryWrites=true&w=majority")
 
 #view
 api.add_resource(register,'/register')

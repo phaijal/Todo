@@ -39,7 +39,6 @@ class Controller:
 
 
     def get_heading(self,payload):
-        #t = copytodo.get_all_task_object()
         ret = []
         lis = list(copytodo.get_heading(payload['sub']).section)
         for a in lis:
@@ -56,9 +55,6 @@ class Controller:
         for a in p.section:
             if a.heading == heading:
                 a.tasks.append(task_name)
-        #print(t.section.get(heading=heading))
-        #t.append(task_name)
-        #copytodo.save_task_object(t)
         p.save()
 
     def get_Task(self, heading,payload):
@@ -75,9 +71,7 @@ class Controller:
     def mark_taskcomplete(self,heading, request_payload,payload):
 
         if "task" in request_payload :
-            #heading = request_payload["heading"]
             task = request_payload["task"]
-          #  copytodo.mark_complete(heading, task)
             p = copytodo.get_task_object(payload['sub'])
             for a in p.section:
                 if a.heading == heading:

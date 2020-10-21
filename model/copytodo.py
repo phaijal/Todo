@@ -37,19 +37,9 @@ def add_heading(person,heading):
 def get_heading(name):
     return people.objects.get(name=name)
 
-def get_all_task_object():
-    return Tasks.objects()
-
 
 def get_task_object(name):
     p = people.objects.get(name=name)
-    #ph = p.section.tasks
     return p
-#    if Tasks.objects(heading=heading).count():
- #       return Tasks.objects.get(heading=heading)
-  #  else:
-   #     return 0
 
 
-def save_task_object(t):
-    t.save()
