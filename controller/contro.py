@@ -1,67 +1,99 @@
 from model import copytodo
 import json
 from bson import json_util
+import jwt
+from login import modellogin
+
+def auth(payload):
+    try:
+
+        for user in modellogin.User.objects:
+            if user.Username == payload['sub']:
+                return 1
+                break
+
+
+
+    except jwt.ExpiredSignatureError:
+        return 'Signature expired. Please log in again.'
+
+    except jwt.InvalidTokenError:
+        return 'Invalid token. Please log in again.'
 
 
 class Controller:
-    def add_heading(self, request_payload):
-        heading = request_payload["heading"]
-        copytodo.add_heading(heading)
+    def add_heading(self, request_payload,payload):
+        authmsg = auth(payload)
+        if authmsg == 1 :
+
+            heading = request_payload["heading"]
+            copytodo.add_heading(payload['sub'],heading)
+            ret_json = {
+                "msg": "Added Heading"
+            }
+        else:
+            ret_json= {
+                "msg": authmsg
+            }
+        return ret_json
 
 
-    def get_heading(self):
-        t = copytodo.get_all_task_object()
+    def get_heading(self,payload):
+        #t = copytodo.get_all_task_object()
         ret = []
-        for a in t:
+        lis = list(copytodo.get_heading(payload['sub']).section)
+        for a in lis:
             ret.append(a.heading)
         return json.dumps(ret)
 
 
-    def add_task(self,heading, request_payload):
+    def add_task(self,heading, request_payload,payload):
         #heading = request_payload["heading"]
         task = request_payload["task"]
         #copytodo.add_task(heading, task)
         task_name = copytodo.taskname(task=task, done=False)
-        t = copytodo.get_task_object(heading)
-        t.tasks.append(task_name)
-        copytodo.save_task_object(t)
+        p = copytodo.get_task_object(payload['sub'])
+        for a in p.section:
+            if a.heading == heading:
+                a.tasks.append(task_name)
+        #print(t.section.get(heading=heading))
+        #t.append(task_name)
+        #copytodo.save_task_object(t)
+        p.save()
+
+    def get_Task(self, heading,payload):
+        p = copytodo.get_task_object(payload['sub'])
+        ret = []
+        for a in p.section:
+            if a.heading == heading:
+                for t in a.tasks:
+                    ret.append(t.task)
+
+        return ret
 
 
-    def get_Task(self, heading):
-        t = copytodo.get_task_object(heading)
-        if t == 0:
-            ret = "No Heading"
-        else:
-            tasks = list(t.tasks)
-            #print(tasks)
-            ret = []
-            for a in tasks:
-                ret.append(a.task)
-        return json.dumps(ret)
-
-
-    def mark_taskcomplete(self,heading, request_payload):
+    def mark_taskcomplete(self,heading, request_payload,payload):
 
         if "task" in request_payload :
             #heading = request_payload["heading"]
             task = request_payload["task"]
           #  copytodo.mark_complete(heading, task)
-            t = copytodo.get_task_object(heading)
-            if t == 0:
-                ret = "No Heading"
-            else:
-                for a in t.tasks:
-                    if a.task == task:
-                        a.done = True
-                copytodo.save_task_object(t)
-                m = task+", status: Completed"
-                ret_json = {
-                    "msg": m
-                }
-                return json.dumps(ret_json)
+            p = copytodo.get_task_object(payload['sub'])
+            for a in p.section:
+                if a.heading == heading:
+                    for t in a.tasks:
+                        if t.task == task:
+                            t.done = True
+                            break
+            p.save()
+            m = task+", status: Completed"
+            ret_json = {
+                "msg": m
+            }
+            return ret_json
         else:
             ret_json = {
                 "msg": "no task specified"
             }
-            return json.dumps(ret_json)
+            return ret_json
 
